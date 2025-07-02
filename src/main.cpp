@@ -7,6 +7,7 @@ sf::RenderWindow window;
 sf::Clock frameClock, tickClock;
 sf::Time frameTime;
 sf::Texture texture;
+sf::Font font;
 Petris petris;
 
 void processEvent(const sf::Event &event);
@@ -18,7 +19,8 @@ int main() {
   window.create(sf::VideoMode({WINDOW_W, WINDOW_H}), "Petris");
   frameClock.start();
   tickClock.start();
-  texture.loadFromFile("../../pieces.png");
+  assert(texture.loadFromFile(BASE_PATH "res/pieces.png"));
+  assert(font.openFromFile(BASE_PATH "res/font.otf"));
 
   while (window.isOpen()) {
     while (frameClock.getElapsedTime() < FPS) {

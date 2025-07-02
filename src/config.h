@@ -3,6 +3,8 @@
 
 #include <SFML/System.hpp>
 
+#define BASE_PATH "../../"
+
 #define TILE_SZ 16                   // tile size
 #define LEVEL_W 10                   // level width
 #define LEVEL_H 20                   // level height

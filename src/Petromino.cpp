@@ -1,14 +1,14 @@
 #include "Petromino.h"
 #include "config.h"
 
-Petronimo::Petronimo() {
+Petromino::Petromino() {
   type = (Type)(rand() % 7);
   orientation = 0;
   paletteIndex = rand() % 3;
   position = sf::Vector2i(5, 0);
 }
 
-void Petronimo::iterate(const std::function<void(int, int)> &callback) const {
+void Petromino::iterate(const std::function<void(int, int)> &callback) const {
   int a = orientation == 0 ? 1 : (orientation == 2 ? -1 : 0);
   int b = orientation == 1 ? 1 : (orientation == 3 ? -1 : 0);
 
@@ -63,7 +63,7 @@ void Petronimo::iterate(const std::function<void(int, int)> &callback) const {
   callback(position.x, position.y);
 }
 
-void Petronimo::draw(sf::RenderTarget &target, sf::Texture &texture,
+void Petromino::draw(sf::RenderTarget &target, sf::Texture &texture,
                      int level) const {
   sf::Sprite sprite(texture);
   sprite.setScale(0.125f * sf::Vector2f(TILE_SZ, TILE_SZ));

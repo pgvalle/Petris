@@ -4,7 +4,7 @@
 #define EMPTY_MATRIX_CELL 4
 
 Petris::Petris() {
-  for (int y = 0; y < LEVEL_H; y++) {
+  for (int y = 0; y < LEVEL_H + H_OFF; y++) {
     for (int x = 0; x < LEVEL_W; x++)
       matrix[y][x] = EMPTY_MATRIX_CELL;
   }
@@ -41,7 +41,7 @@ void Petris::movePetronimoDown() {
   if (hasPetronimoCollided()) {
     petronimo->position.y--;
     petronimo->iterate([&](int x, int y) {
-      matrix[y][x] = petronimo->paletteIndex;
+      matrix[y + H_OFF][x] = petronimo->paletteIndex;
     });
 
     delete petronimo;
@@ -57,10 +57,10 @@ void Petris::draw(sf::RenderTarget &target, sf::Texture &texture) const {
 
   for (int y = 0; y < LEVEL_H; y++) {
     for (int x = 0; x < LEVEL_W; x++) {
-      if (matrix[y][x] == EMPTY_MATRIX_CELL)
+      if (matrix[y + H_OFF][x] == EMPTY_MATRIX_CELL)
         continue;
 
-      sprite.setTextureRect(sf::IntRect({matrix[y][x] * 8, level * 8}, {8, 8}));
+      sprite.setTextureRect(sf::IntRect({matrix[y + H_OFF][x] * 8, level * 8}, {8, 8}));
       sprite.setPosition(sf::Vector2f(x * TILE_SZ, y * TILE_SZ));
       target.draw(sprite);
     }
@@ -71,7 +71,7 @@ bool Petris::hasPetronimoCollided() const {
   int collisions = 0;
   petronimo->iterate([&](int x, int y) {
     bool outOfBounds = 0 > x || x >= LEVEL_W || y >= LEVEL_H;
-    if (outOfBounds || matrix[y][x] != EMPTY_MATRIX_CELL) {
+    if (outOfBounds || matrix[y + H_OFF][x] != EMPTY_MATRIX_CELL) {
       collisions++;
     }
   });

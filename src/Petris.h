@@ -6,6 +6,8 @@
 #include <SFML/System.hpp>
 #include <cstdint>
 
+#define H_OFF 2
+
 class Petris {
 public:
   Petris();
@@ -18,7 +20,7 @@ public:
 private:
   bool hasPetronimoCollided() const;
 
-  uint8_t matrix[LEVEL_H][LEVEL_W];
+  uint8_t matrix[LEVEL_H + H_OFF][LEVEL_W];
   uint8_t level;
   uint32_t score;
   Petronimo *petronimo;

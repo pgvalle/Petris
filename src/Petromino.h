@@ -13,6 +13,7 @@ struct Petromino {
 
   Petromino();
 
+  void rotate(int dr);
   void iterate(const std::function<void(int, int)> &callback) const;
   void draw(sf::RenderTarget &target, sf::Texture &texture, int level) const;
 };

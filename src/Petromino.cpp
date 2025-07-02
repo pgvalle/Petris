@@ -8,6 +8,12 @@ Petromino::Petromino() {
   position = sf::Vector2i(5, 0);
 }
 
+void Petromino::rotate(int dr) {
+  orientation = (orientation + dr) % 4;
+  if (orientation < 0)
+    orientation += 4;
+}
+
 void Petromino::iterate(const std::function<void(int, int)> &callback) const {
   int a = orientation == 0 ? 1 : (orientation == 2 ? -1 : 0);
   int b = orientation == 1 ? 1 : (orientation == 3 ? -1 : 0);

@@ -11,46 +11,46 @@ Petris::Petris() {
 
   level = 4;
   score = 0;
-  petronimo = new Petronimo;
+  petromino = new Petromino;
 }
 
-void Petris::rotatePetronimo(int dr) {
+void Petris::rotatePetromino(int dr) {
   dr /= abs(dr);
 
-  petronimo->orientation = (petronimo->orientation + dr) % 4;
-  if (petronimo->orientation < 0)
-    petronimo->orientation += 4;
+  petromino->orientation = (petromino->orientation + dr) % 4;
+  if (petromino->orientation < 0)
+    petromino->orientation += 4;
 
-  if (hasPetronimoCollided()) {
-    petronimo->orientation = (petronimo->orientation - dr) % 4;
-    if (petronimo->orientation < 0)
-      petronimo->orientation += 4;
+  if (hasPetrominoCollided()) {
+    petromino->orientation = (petromino->orientation - dr) % 4;
+    if (petromino->orientation < 0)
+      petromino->orientation += 4;
   }
 }
 
-void Petris::movePetronimoX(int dx) {
+void Petris::movePetrominoX(int dx) {
   dx /= abs(dx);
 
-  petronimo->position.x += dx;
-  if (hasPetronimoCollided())
-    petronimo->position.x -= dx;
+  petromino->position.x += dx;
+  if (hasPetrominoCollided())
+    petromino->position.x -= dx;
 }
 
-void Petris::movePetronimoDown() {
-  petronimo->position.y++;
-  if (hasPetronimoCollided()) {
-    petronimo->position.y--;
-    petronimo->iterate([&](int x, int y) {
-      matrix[y + H_OFF][x] = petronimo->paletteIndex;
+void Petris::movePetrominoDown() {
+  petromino->position.y++;
+  if (hasPetrominoCollided()) {
+    petromino->position.y--;
+    petromino->iterate([&](int x, int y) {
+      matrix[y + H_OFF][x] = petromino->paletteIndex;
     });
 
-    delete petronimo;
-    petronimo = new Petronimo;
+    delete petromino;
+    petromino = new Petromino;
   }
 }
 
 void Petris::draw(sf::RenderTarget &target, sf::Texture &texture) const {
-  petronimo->draw(target, texture, level);
+  petromino->draw(target, texture, level);
 
   sf::Sprite sprite(texture);
   sprite.setScale(0.125f * sf::Vector2f(TILE_SZ, TILE_SZ));
@@ -67,9 +67,9 @@ void Petris::draw(sf::RenderTarget &target, sf::Texture &texture) const {
   }
 }
 
-bool Petris::hasPetronimoCollided() const {
+bool Petris::hasPetrominoCollided() const {
   int collisions = 0;
-  petronimo->iterate([&](int x, int y) {
+  petromino->iterate([&](int x, int y) {
     bool outOfBounds = 0 > x || x >= LEVEL_W || y >= LEVEL_H;
     if (outOfBounds || matrix[y + H_OFF][x] != EMPTY_MATRIX_CELL) {
       collisions++;

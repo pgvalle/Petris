@@ -12,18 +12,18 @@ class Petris {
 public:
   Petris();
 
-  void rotatePetronimo(int dr);
-  void movePetronimoX(int dx);
-  void movePetronimoDown();
+  void rotatePetromino(int dr);
+  void movePetromino(int dx);
+  void movePetrominoDown();
   void draw(sf::RenderTarget &target, sf::Texture &texture) const;
 
 private:
-  bool hasPetronimoCollided() const;
+  bool hasPetrominoCollided() const;
 
   uint8_t matrix[LEVEL_H + H_OFF][LEVEL_W];
   uint8_t level;
   uint32_t score;
-  Petronimo *petronimo;
+  Petromino *petromino;
 };
 
 #endif // _PETRIS_H_

@@ -17,14 +17,14 @@ void draw();
 int main() {
   srand(time(NULL));
   window.create(sf::VideoMode({WIN_W, WIN_H}), "Petris");
-  window.setFramerateLimit(60);
+  window.setFramerateLimit(30);
   frameClock.start();
   assert(texture.loadFromFile(BASE_PATH "res/pieces.png"));
   assert(font.openFromFile(BASE_PATH "res/font.otf"));
 
   while (window.isOpen()) {
     while (frameClock.getElapsedTime() < FPS) {
-      if (auto event = window.pollEvent()) {
+      if (std::optional event = window.pollEvent()) {
         processEvent(event.value());
       }
     }
@@ -48,9 +48,9 @@ void processEvent(const sf::Event &event) {
     return;
   }
 
-  
+  petris.processEvent(event);
 }
 
 void update() {
-  
+  petris.update();
 }

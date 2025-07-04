@@ -17,7 +17,6 @@ public:
 private:
   void rotatePetromino(int dr);
   void movePetromino(int dx);
-  void movePetrominoDown();
   bool hasPetrominoCollided() const;
 
   // general

@@ -73,7 +73,7 @@ void Petromino::draw(sf::RenderTarget &target, sf::Texture &texture,
                      int level) const {
   sf::Sprite sprite(texture);
   sprite.setScale(0.125f * sf::Vector2f(TILE_SZ, TILE_SZ));
-  sprite.setTextureRect(sf::IntRect({paletteIndex * 8, level * 8}, {8, 8}));
+  sprite.setTextureRect(sf::IntRect({paletteIndex * 8, level % 10 * 8}, {8, 8}));
 
   iterate([&](int x, int y) {
     sprite.setPosition(sf::Vector2f(x * TILE_SZ, y * TILE_SZ));

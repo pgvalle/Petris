@@ -6,24 +6,32 @@
 #include <SFML/System.hpp>
 #include <cstdint>
 
-#define H_OFF 2
-
 class Petris {
 public:
   Petris();
 
-  void rotatePetromino(int dr);
-  void movePetromino(int dx);
-  void movePetrominoDown();
+  void processEvent(const sf::Event &event);
+  void update();
   void draw(sf::RenderTarget &target, sf::Texture &texture) const;
 
 private:
+  void rotatePetromino(int dr);
+  void movePetromino(int dx);
+  void movePetrominoDown();
   bool hasPetrominoCollided() const;
 
-  uint8_t matrix[LEVEL_H + H_OFF][LEVEL_W];
+  // general
+
+  enum { GAMEPLAY, PETRIS } state;
+  uint8_t matrix[MAT_H][MAT_W + 1];
   uint8_t level;
   uint32_t score;
   Petromino *petromino;
+
+  // gameplay
+
+  sf::Clock moveDownClock;
+  sf::Time moveDownTime;
 };
 
 #endif // _PETRIS_H_

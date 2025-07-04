@@ -4,7 +4,7 @@
 #include <SFML/Window.hpp>
 
 sf::RenderWindow window;
-sf::Clock frameClock, tickClock;
+sf::Clock frameClock;
 sf::Time frameTime;
 sf::Texture texture;
 sf::Font font;
@@ -16,9 +16,9 @@ void draw();
 
 int main() {
   srand(time(NULL));
-  window.create(sf::VideoMode({WINDOW_W, WINDOW_H}), "Petris");
+  window.create(sf::VideoMode({WIN_W, WIN_H}), "Petris");
+  window.setFramerateLimit(60);
   frameClock.start();
-  tickClock.start();
   assert(texture.loadFromFile(BASE_PATH "res/pieces.png"));
   assert(font.openFromFile(BASE_PATH "res/font.otf"));
 
@@ -48,36 +48,9 @@ void processEvent(const sf::Event &event) {
     return;
   }
 
-  auto keypressed = event.getIf<sf::Event::KeyPressed>();
-  if (keypressed) {
-    switch (keypressed->code) {
-    case sf::Keyboard::Key::A:
-      petris.rotatePetronimo(1);
-      break;
-    case sf::Keyboard::Key::S:
-      petris.rotatePetronimo(-1);
-      break;
-    case sf::Keyboard::Key::Left:
-      petris.movePetronimoX(-1);
-      break;
-    case sf::Keyboard::Key::Right:
-      petris.movePetronimoX(1);
-      break;
-    case sf::Keyboard::Key::Down:
-      petris.movePetronimoDown();
-      break;
-    default:
-      break;
-    }
-
-    return;
-  }
+  
 }
 
 void update() {
-  if (tickClock.getElapsedTime() < TPS)
-    return;
-
-  petris.movePetronimoDown();
-  tickClock.restart();
+  
 }

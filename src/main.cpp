@@ -4,23 +4,23 @@
 #include <SFML/Window.hpp>
 
 sf::RenderWindow window;
-sf::Clock frameClock;
-sf::Time frameTime;
 sf::Texture texture;
 sf::Font font;
 Petris petris;
 
 void processEvent(const sf::Event &event);
-void update();
+void update(const sf::Time &delta);
 void draw();
 
 int main() {
-  srand(time(NULL));
   window.create(sf::VideoMode({WIN_W, WIN_H}), "Petris");
   window.setFramerateLimit(30);
-  frameClock.start();
+  window.setKeyRepeatEnabled(false);
   assert(texture.loadFromFile(BASE_PATH "res/pieces.png"));
   assert(font.openFromFile(BASE_PATH "res/font.otf"));
+
+  sf::Clock frameClock;
+  sf::Time frameDelta;
 
   while (window.isOpen()) {
     while (frameClock.getElapsedTime() < FPS) {
@@ -30,11 +30,11 @@ int main() {
     }
 
     window.clear(sf::Color::Black);
-    update();
+    update(frameDelta);
     petris.draw(window, texture);
     window.display();
 
-    frameTime = frameClock.getElapsedTime();
+    frameDelta = frameClock.getElapsedTime();
     frameClock.restart();
   }
 
@@ -42,15 +42,22 @@ int main() {
   return 0;
 }
 
+bool pause = false;
+
 void processEvent(const sf::Event &event) {
   if (event.is<sf::Event::Closed>()) {
     window.close();
     return;
   }
 
-  petris.processEvent(event);
+  auto kbDn = event.getIf<sf::Event::KeyPressed>();
+  if (kbDn && kbDn->code == sf::Keyboard::Key::Escape)
+    pause = !pause;
+  if (!pause)
+    petris.processEvent(event);
 }
 
-void update() {
-  petris.update();
+void update(const sf::Time &delta) {
+  if (!pause)
+    petris.update(delta);
 }

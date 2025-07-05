@@ -9,6 +9,7 @@
 struct Matrix {
   static const int W = 10, H = 20; // dimensions
   static const int8_t EMPTY_CELL = 4; // value to identify an empty cell
+
   std::vector<std::array<int8_t, W + 1>> matrix;
 
   Matrix();

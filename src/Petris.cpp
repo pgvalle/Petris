@@ -2,39 +2,25 @@
 
 #define MAT_EMPTY_CELL 4
 
-sf::Time calculateFallInterval(int level) {
-  float fallInterval = std::pow(0.8f - 0.007f * level, level);
-  return sf::seconds(fallInterval);
+sf::Time calculateInterval(int level) {
+  float interval = std::pow(0.8f - 0.007f * level, level);
+  return sf::seconds(interval);
 }
 
 Petris::Petris() {
   state = GAMEPLAY;
   level = 0;
   score = 0;
-  petromino = new Petromino;
-  fallClock.start();
-  fallInterval = calculateFallInterval(level);
+  petromino = new Petromino();
+  fallTime = sf::seconds(0);
+  fallInterval = calculateInterval(level);
 }
 
 void Petris::processEvent(const sf::Event &event) {
   switch (state) {
-  case GAMEPLAY: {
-    auto kbDn = event.getIf<sf::Event::KeyPressed>();
-    if (kbDn && kbDn->code == sf::Keyboard::Key::Down)
-      fallInterval = sf::seconds(0);
-    if (kbDn && kbDn->code == sf::Keyboard::Key::Z)
-      rotatePetromino(-1);
-    if (kbDn && kbDn->code == sf::Keyboard::Key::X)
-      rotatePetromino(1);
-    if (kbDn && kbDn->code == sf::Keyboard::Key::Left)
-      movePetromino(-1);
-    if (kbDn && kbDn->code == sf::Keyboard::Key::Right)
-      movePetromino(1);
-
-    auto kbUp = event.getIf<sf::Event::KeyReleased>();
-    if (kbUp && kbUp->code == sf::Keyboard::Key::Down)
-      fallInterval = calculateFallInterval(level);
-  } break;
+  case GAMEPLAY:
+    GameplayProcessEvent(event);
+    break;
   case PETRIS:
     break;
   case COMPACT:
@@ -42,25 +28,10 @@ void Petris::processEvent(const sf::Event &event) {
   }
 }
 
-void Petris::update() {
+void Petris::update(const sf::Time &delta) {
   switch (state) {
   case GAMEPLAY:
-    if (fallClock.getElapsedTime() < fallInterval)
-      break;
-    fallClock.restart();
-    // try moving it
-    petromino->position.y++;
-    if (!matrix.collidePetromino(petromino))
-      break;
-    // failed, so go back to previous position and place it there
-    petromino->position.y--;
-    matrix.placePetromino(petromino);
-    // this petronimo is done now
-    delete petromino;
-    petromino = new Petromino;
-    // check for a tetris
-    if (matrix.hasPetrisRow())
-      state = PETRIS;
+    GameplayUpdate(delta);
     break;
   case PETRIS:
     matrix.updatePetrisRows();
@@ -68,11 +39,8 @@ void Petris::update() {
       state = COMPACT;
     break;
   case COMPACT:
-    printf("here2!\n");
     matrix.compact();
     state = GAMEPLAY;
-    fallClock.restart();
-    fallInterval = calculateFallInterval(level);
     break;
   }
 }
@@ -82,6 +50,47 @@ void Petris::draw(sf::RenderTarget &target, sf::Texture &texture) const {
     petromino->draw(target, texture, level);
 
   matrix.draw(target, texture, level);
+}
+
+void Petris::GameplayProcessEvent(const sf::Event &event) {
+  auto kbDn = event.getIf<sf::Event::KeyPressed>();
+  if (kbDn && kbDn->code == sf::Keyboard::Key::Down)
+    fallInterval = sf::seconds(0);
+  if (kbDn && kbDn->code == sf::Keyboard::Key::Z)
+    rotatePetromino(-1);
+  if (kbDn && kbDn->code == sf::Keyboard::Key::X)
+    rotatePetromino(1);
+  if (kbDn && kbDn->code == sf::Keyboard::Key::Left)
+    movePetromino(-1);
+  if (kbDn && kbDn->code == sf::Keyboard::Key::Right)
+    movePetromino(1);
+
+  auto kbUp = event.getIf<sf::Event::KeyReleased>();
+  if (kbUp && kbUp->code == sf::Keyboard::Key::Down)
+    fallInterval = calculateInterval(level);
+}
+
+void Petris::GameplayUpdate(const sf::Time &delta) {
+  fallTime += delta;
+  if (fallTime < fallInterval)
+    return;
+  fallTime -= fallInterval;
+  // try moving it
+  petromino->position.y++;
+  if (!matrix.collidePetromino(petromino))
+    return;
+  // failed, so go back to previous position and place it there
+  petromino->position.y--;
+  matrix.placePetromino(petromino);
+  // this petronimo is done now
+  delete petromino;
+  petromino = new Petromino();
+  // check for a tetris
+  if (matrix.hasPetrisRow())
+    state = PETRIS;
+  // stop falling fast
+  fallTime = sf::seconds(0);
+  fallInterval = calculateInterval(level);
 }
 
 void Petris::rotatePetromino(int dr) {

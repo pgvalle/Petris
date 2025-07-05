@@ -11,13 +11,13 @@ public:
   Petris();
 
   void processEvent(const sf::Event &event);
-  void update();
+  void update(const sf::Time &delta);
   void draw(sf::RenderTarget &target, sf::Texture &texture) const;
 
 private:
   void GameplayProcessEvent(const sf::Event &event);
-  void GameplayUpdate();
-  void PetrisUpdate();
+  void GameplayUpdate(const sf::Time &delta);
+  void PetrisUpdate(const sf::Time &delta);
 
   void rotatePetromino(int dr);
   void movePetromino(int dx);
@@ -32,8 +32,7 @@ private:
 
   // gameplay
 
-  sf::Clock fallClock;
-  sf::Time fallInterval;
+  sf::Time fallTime, fallInterval;
 };
 
 #endif // _PETRIS_H_

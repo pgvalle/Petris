@@ -1,15 +1,21 @@
 #include "Petromino.h"
 #include "config.h"
+#include <random>
 
 Petromino::Petromino() {
-  type = (Type)(rand() % 7);
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  static std::uniform_int_distribution<uint8_t> distrib(0, 6);
+
+  type = (Type)distrib(gen);
   orientation = 0;
   paletteIndex = rand() % 3;
   position = sf::Vector2i(5, 0);
 }
 
 void Petromino::rotate(int dr) {
-  orientation = (orientation + dr) % 4;
+  orientation += dr;
+  orientation %= 4;
   if (orientation < 0)
     orientation += 4;
 }
@@ -73,7 +79,8 @@ void Petromino::draw(sf::RenderTarget &target, sf::Texture &texture,
                      int level) const {
   sf::Sprite sprite(texture);
   sprite.setScale(0.125f * sf::Vector2f(TILE_SZ, TILE_SZ));
-  sprite.setTextureRect(sf::IntRect({paletteIndex * 8, level % 10 * 8}, {8, 8}));
+  sprite.setTextureRect(
+      sf::IntRect({paletteIndex * 8, level % 10 * 8}, {8, 8}));
 
   iterate([&](int x, int y) {
     sprite.setPosition(sf::Vector2f(x * TILE_SZ, y * TILE_SZ));
